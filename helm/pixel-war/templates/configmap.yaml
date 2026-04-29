@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pixel-war.fullname" . }}-backend-config
+  labels:
+    {{- include "pixel-war.labels" . | nindent 4 }}
+data:
+  DB_HOST: {{ include "pixel-war.fullname" . }}-db
+  DB_PORT: "{{ .Values.db.service.port }}"
+  DB_NAME: {{ .Values.database.name }}
+  PORT: "{{ .Values.backend.service.port }}"

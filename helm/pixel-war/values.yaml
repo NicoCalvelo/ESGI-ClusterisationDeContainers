@@ -1,0 +1,55 @@
+# -- Frontend configuration
+frontend:
+  image:
+    repository: ghcr.io/nicocalvelo/pixel-war-frontend
+    tag: latest
+  replicas: 2
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  service:
+    type: ClusterIP
+    port: 80
+
+# -- Backend configuration
+backend:
+  image:
+    repository: ghcr.io/nicocalvelo/pixel-war-backend
+    tag: latest
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  service:
+    type: ClusterIP
+    port: 3001
+
+# -- PostgreSQL configuration
+db:
+  image:
+    repository: postgres
+    tag: "15-alpine"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  storage: 1Gi
+  service:
+    port: 5432
+
+# -- Database credentials (overridable)
+database:
+  name: pixelwar
+  user: pixelwar
+  password: pixelwar

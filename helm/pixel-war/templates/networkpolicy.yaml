@@ -1,0 +1,41 @@
+# Only backend can talk to database
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "pixel-war.fullname" . }}-db-policy
+  labels:
+    {{- include "pixel-war.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "pixel-war.fullname" . }}-db
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: {{ include "pixel-war.fullname" . }}-backend
+      ports:
+        - port: {{ .Values.db.service.port }}
+---
+# Only frontend can talk to backend
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "pixel-war.fullname" . }}-backend-policy
+  labels:
+    {{- include "pixel-war.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "pixel-war.fullname" . }}-backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: {{ include "pixel-war.fullname" . }}-frontend
+      ports:
+        - port: {{ .Values.backend.service.port }}
