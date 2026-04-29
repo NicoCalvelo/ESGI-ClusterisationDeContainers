@@ -1,8 +1,7 @@
-# -- Frontend configuration
 frontend:
   image:
     repository: ghcr.io/nicocalvelo/pixel-war-frontend
-    tag: latest
+    tag: d2fb096bbaec16043b538722b05d2a1512ce3615
   replicas: 2
   resources:
     requests:
@@ -15,11 +14,10 @@ frontend:
     type: ClusterIP
     port: 80
 
-# -- Backend configuration
 backend:
   image:
     repository: ghcr.io/nicocalvelo/pixel-war-backend
-    tag: latest
+    tag: d2fb096bbaec16043b538722b05d2a1512ce3615
   replicas: 2
   resources:
     requests:
@@ -32,7 +30,6 @@ backend:
     type: ClusterIP
     port: 3001
 
-# -- PostgreSQL configuration
 db:
   image:
     repository: postgres
@@ -48,7 +45,6 @@ db:
   service:
     port: 5432
 
-# -- Database credentials (overridable)
 database:
   name: pixelwar
   user: pixelwar

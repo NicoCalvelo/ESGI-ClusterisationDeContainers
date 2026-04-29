@@ -1,13 +1,12 @@
-# 🎨 Pixel War
+# PROJET CDC
 
 Application collaborative de type r/place — grille partagée 50×50 pixels.
 
 ## Choix techniques
 
-- Frontend => **React + nginx** Build statique léger, nginx comme reverse proxy
+- Frontend => **React + nginx** Build statique léger
 - Backend => **Express (Node.js)** Node.js / Express, 2 routes REST (`GET /api/pixels`, `PUT /api/pixel`) + health-check (`GET /health`)
 - BDD => **PostgreSQL** simple facile à configurer
-- Conteneurisation => **Docker multi-stage** Image frontend ~25MB (nginx:alpine)
 - Orchestration => **Helm chart** Déploiement déclaratif, configurable via `values.yaml`
 - CI/CD => **GitHub Actions** Build + push images GHCR, lint Helm
 - Résilience => **Liveness + Readiness probes** Redémarrage auto si crash, pas de trafic si pas prêt
@@ -29,10 +28,19 @@ helm install pixel-war ./helm/pixel-war
 Accès : http://localhost:8080
 
 ### Vérifier le déploiement
-
 ```bash
 kubectl get pods
 kubectl get svc
+```
+
+## Suppresion d'un pod backend (test de résilience)
+```bash
+kubectl delete pod pixel-war-pixel-war-backend-<hash>
+```
+
+## Suppression du cluster
+```bash
+kind delete cluster --name pixel-war
 ```
 
 ## Structure du projet
