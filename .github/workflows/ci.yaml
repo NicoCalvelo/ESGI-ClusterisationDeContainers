@@ -8,8 +8,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/pixel-war-frontend
-  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/pixel-war-backend
 
 jobs:
   build-and-push:
@@ -21,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set lowercase image names
+        run: |
+          echo "BACKEND_IMAGE=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/pixel-war-backend" >> $GITHUB_ENV
+          echo "FRONTEND_IMAGE=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/pixel-war-frontend" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -29,7 +32,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & push backend image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./backend
           push: ${{ github.event_name == 'push' }}
@@ -38,7 +41,7 @@ jobs:
             ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
 
       - name: Build & push frontend image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./projet-cdc
           push: ${{ github.event_name == 'push' }}
@@ -52,7 +55,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Lint Helm chart
         run: helm lint ./helm/pixel-war
