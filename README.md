@@ -14,59 +14,25 @@ Application collaborative de type r/place — grille partagée 50×50 pixels.
 - Sécurité => **Secrets, NetworkPolicies** Credentials en Secret K8s, réseau segmenté
 - Persistance => **PersistentVolumeClaim** Les données survivent aux redémarrages
 
-## Lancement local (Docker Compose)
+## Lancement
 
+On démarre un cluster Kind avec la configuration personnalisée (port-forwarding du docker) :
 ```bash
-docker-compose up --build
+kind create cluster --name pixel-war --config kind-config.yaml
 ```
 
-Accès : http://localhost:8080
-
-## Déploiement Kubernetes (Helm)
-
-### Prérequis
-
-- Un cluster Kubernetes (Kind, Minikube, etc.)
-- Helm 3 installé
-
-### Créer le cluster Kind
-
-```bash
-kind create cluster --name pixel-war
-```
-
-### Installer le chart
-
+Ensuite, on installe le chart Helm :
 ```bash
 helm install pixel-war ./helm/pixel-war
 ```
 
-### Surcharger les valeurs (ex: credentials)
-
-```bash
-helm install pixel-war ./helm/pixel-war \
-  --set database.password=monMotDePasse
-```
+Accès : http://localhost:8080
 
 ### Vérifier le déploiement
 
 ```bash
 kubectl get pods
 kubectl get svc
-```
-
-### Accéder à l'application
-
-```bash
-kubectl port-forward svc/pixel-war-pixel-war-frontend 8080:80
-```
-
-Puis ouvrir http://localhost:8080
-
-### Désinstaller
-
-```bash
-helm uninstall pixel-war
 ```
 
 ## Structure du projet

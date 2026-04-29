@@ -9,3 +9,27 @@ data:
   DB_PORT: "{{ .Values.db.service.port }}"
   DB_NAME: {{ .Values.database.name }}
   PORT: "{{ .Values.backend.service.port }}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pixel-war.fullname" . }}-nginx-config
+  labels:
+    {{- include "pixel-war.labels" . | nindent 4 }}
+data:
+  default.conf: |
+    server {
+        listen 80;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /api/ {
+            proxy_pass http://{{ include "pixel-war.fullname" . }}-backend:{{ .Values.backend.service.port }};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
